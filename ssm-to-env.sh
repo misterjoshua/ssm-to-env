@@ -11,6 +11,7 @@ ENV=$(cat <<<$PARAMS \
 
 if [ ! -z "$ENV_FILE" ]; then
     cat <<<$ENV >$ENV_FILE
+    echo "Wrote $ENV_FILE"
 else
     cat <<<$ENV
 fi
