@@ -10,6 +10,8 @@ ADD ssm-to-env.sh /
 ENV AWS_ACCESS_KEY_ID=""
 ENV AWS_SECRET_ACCESS_KEY=""
 ENV AWS_DEFAULT_REGION=""
-ENV SSM_PATH="/data/.env"
+ENV SSM_PATH="/"
+ENV ENV_FILE=""
+ENV AWS_PROFILE=""
 
 ENTRYPOINT [ "/ssm-to-env.sh" ]
