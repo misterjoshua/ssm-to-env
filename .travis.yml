@@ -1,0 +1,7 @@
+language: generic
+script:
+- set -e
+- docker build -t $DOCKER_REPO:latest .
+- source <(curl -s https://raw.githubusercontent.com/misterjoshua/docker-push-semver-bash/master/docker_push_semver.sh)
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+- dockerPushSemver $DOCKER_REPO `git describe --tags | echo 0.0.0`
