@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 SSM_PATH=${SSM_PATH:-/}
-ENV_FILE=${ENV_PATH:-}
+ENV_FILE=${ENV_FILE:-}
 AWS_PROFILE=${AWS_PROFILE:-default}
 
 PARAMS=$(aws ssm get-parameters-by-path --path "$SSM_PATH" --recursive --profile $AWS_PROFILE)
