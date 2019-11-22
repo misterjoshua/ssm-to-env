@@ -2,13 +2,10 @@
 
 SSM_PATH=${SSM_PATH:-/}
 ENV_FILE=${ENV_PATH:-}
-AWS_PROFILE=${AWS_PROFILE:-}
+AWS_PROFILE=${AWS_PROFILE:-default}
 
-if [ ! -z "$AWS_PROFILE" ]; then
-    AWS_PROFILE_ARG="--profile $AWS_PROFILE"
-fi
-
-ENV=$(aws ssm get-parameters-by-path --path "$SSM_PATH" $AWS_PROFILE_ARG \
+PARAMS=$(aws ssm get-parameters-by-path --path "$SSM_PATH" --recursive --profile $AWS_PROFILE)
+ENV=$(cat <<<$PARAMS \
     | jq '.Parameters[] | (.Name | sub(".*/"; "")) + " = " + .Value | @text' \
         --raw-output)
 
