@@ -2,9 +2,21 @@
 
 # SSM to .ENV Container
 
-This container image reads properties from the AWS SSM Parameter Store and converts them to a `.env` file format so that apps don't need to know how to read SSM Parameters to be configured through SSM. This container is intended to be used in an `initContainer` in EKS or as sidecar container task in Amazon ECS that your main container depends on completing first.
+This container image reads configuration settings from AWS SSM Parameter Store and writes them to a `.env` file on the filesystem. This sidecar container helps in these ways:
 
-The container image will check for an ECS environment and automatically configure itself to use the ECS task role for querying the SSM Parameter store.
+* Reads all parameter keys recursively from a given SSM Parameter Store path prefix.
+* Applications don't need to know how to read SSM parameters.
+* Task Definitions don't need to have dozens of `valueFrom` SSM environment variables per container.
+
+This container is intended to be used in an `initContainer` in EKS or as a sidecar container task in Amazon ECS.
+
+## Example Output
+
+```
+DATABASE_HOST = yourhostname.yourdomain
+S3_BUCKET = foo.s3.amazonaws.com
+S3_PREFIX = bar/baz
+```
 
 ## Configuration
 
@@ -17,6 +29,8 @@ Configuration is done through environment variables.
 | `AWS_DEFAULT_REGION` | The AWS CLI's default region.
 
 ## ECS Configuration
+
+The container image will check for an ECS environment and automatically configure itself to use the ECS task role for querying the SSM Parameter store.
 
 To use this container in an ECS task:
 
