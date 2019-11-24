@@ -81,3 +81,5 @@ To use this container in an ECS task:
     "condition": "COMPLETE"
 }
 ```
+
+* Ensure that your task is running with a task role that has permission to access the SSM parameters you wish to convert to `.env`.
