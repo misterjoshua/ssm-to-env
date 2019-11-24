@@ -45,7 +45,7 @@ To use this container in an ECS task:
 ```
 {
     "name": "ssm-to-env",
-    "image": "wheatstalk/ssm-to-env:latest",
+    "image": "wheatstalk/ssm-to-env:0.2",
     "memory": 256,
     "essential": false,
     "portMappings": [],
