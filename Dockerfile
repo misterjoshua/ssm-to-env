@@ -1,14 +1,24 @@
-FROM python:alpine
+FROM debian:stable-slim
 
-ARG CLI_VERSION=1.16.289
+RUN apt-get update \
+        && apt-get install -y \
+            curl \
+            jq \
+            unzip \
+        && rm -rf /var/lib/apt/lists/*
 
-RUN apk -uv add --no-cache bash curl groff jq less && \
-    pip install --no-cache-dir awscli==$CLI_VERSION
+# Install AWS2
+WORKDIR /tmp
+RUN curl -LO "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-linux-x86_64.zip" \
+        && unzip awscli-exe-linux-x86_64.zip \
+        && ./aws/install \
+        && rm -rf ./aws \
+        && aws2 --version
 
+WORKDIR /
 ADD ssm-to-env.sh /
 ADD entrypoint.sh /
 
-ENV AWS_DEFAULT_REGION="ca-central-1"
 ENV SSM_PATH="/"
 ENV ENV_FILE="/data/.env"
 

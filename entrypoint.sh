@@ -1,26 +1,29 @@
 #!/bin/bash -e
 
-AWS_PROFILE=${AWS_PROFILE:-default}
-
 if [ ! -z "$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI" ]; then
-    # Set up a cli config that gets credentials from the EcsContainer.
+    # Detected an ECS environment. Set up a cli config that gets
+    # credentials from the EcsContainer.
     mkdir -p ~/.aws
 
     cat >~/.aws/config <<END
-[profile ecs]
+[profile default]
 region = ca-central-1
 END
     cat >~/.aws/credentials <<END
-[ecs]
+[default]
 credential_source = EcsContainer
 END
 
-    AWS_PROFILE=ecs
 fi
 
 # Test that we can access the caller identity.
-aws sts get-caller-identity --profile $AWS_PROFILE >/dev/null
+aws2 sts get-caller-identity >/dev/null
 
 # Invoke the ssm to env script.
-AWS_PROFILE=$AWS_PROFILE \
-./ssm-to-env.sh
+if [ -z "$ENV_FILE" ]; then
+    ./ssm-to-env.sh
+else
+    echo "Writing environment variables from SSM parameter path $SSM_PATH to $ENV_FILE"
+    mkdir -p $(dirname $ENV_FILE)
+    ./ssm-to-env.sh >$ENV_FILE
+fi
